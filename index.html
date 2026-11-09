@@ -15,6 +15,7 @@
   <title>英语口语从小白到大师 · 互动网页书 Demo</title>
   <style>
     :root {
+      color-scheme: light;
       --bg: #F7F4EF;
       --panel: #FFFFFF;
       --ink: #26333D;
@@ -24,14 +25,60 @@
       --blue: #3D5A80;
       --blue-soft: #E8EFF7;
       --warm: #F2E8DC;
+      --warm-2: #FFF8F1;
       --green: #3F7D58;
       --green-soft: #E9F5EE;
       --red: #B34A4A;
       --red-soft: #FBECEC;
       --border: #E5DED4;
       --shadow: 0 10px 24px rgba(38,51,61,.08);
+      --header-bg: var(--header-bg);
       --radius: 18px;
       font-size: 16px;
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #1B2128;
+      --panel: #252D36;
+      --ink: #E8EDF2;
+      --muted: #9DAAB5;
+      --accent: #E07A5F;
+      --accent-dark: #D98A72;
+      --blue: #8FB3D9;
+      --blue-soft: #2A3441;
+      --warm: #2C2A26;
+      --warm-2: #2E2B27;
+      --green: #7FBF9A;
+      --green-soft: #243530;
+      --red: #D98A8A;
+      --red-soft: #3B2B2B;
+      --border: #3B4552;
+      --shadow: 0 10px 24px rgba(0,0,0,.4);
+      --header-bg: rgba(27,33,40,.92);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --bg: #1B2128;
+        --panel: #252D36;
+        --ink: #E8EDF2;
+        --muted: #9DAAB5;
+        --accent: #E07A5F;
+        --accent-dark: #D98A72;
+        --blue: #8FB3D9;
+        --blue-soft: #2A3441;
+        --warm: #2C2A26;
+        --warm-2: #2E2B27;
+        --green: #7FBF9A;
+        --green-soft: #243530;
+        --red: #D98A8A;
+        --red-soft: #3B2B2B;
+        --border: #3B4552;
+        --shadow: 0 10px 24px rgba(0,0,0,.4);
+        --header-bg: rgba(27,33,40,.92);
+      }
     }
 
     * { box-sizing: border-box; }
@@ -54,7 +101,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(247,244,239,.92);
+      background: var(--header-bg);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
@@ -150,7 +197,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: #fff;
+      background: var(--panel);
       border: 1px solid var(--border);
       color: var(--blue);
       padding: 7px 12px;
@@ -189,9 +236,49 @@
     .btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); }
     .btn-blue { background: var(--blue); color: #fff; }
     .btn-blue:hover { filter: brightness(1.08); }
-    .btn-ghost { background: #fff; border: 1px solid var(--border); color: var(--ink); }
+    .btn-ghost { background: var(--panel); border: 1px solid var(--border); color: var(--ink); }
     .btn-ghost:hover { background: #F7F2EC; }
     .btn-sm { padding: 7px 11px; font-size: .88rem; border-radius: 10px; }
+    #loop-button.active { background: var(--accent); color: #fff; border-color: var(--accent-dark); }
+
+    .level-badge {
+      display: inline-block;
+      padding: 2px 9px;
+      margin-left: 8px;
+      border-radius: 999px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+      vertical-align: middle;
+    }
+    .level-badge.lv-A2 { background: var(--green-soft); color: var(--green); }
+    .level-badge.lv-B1 { background: var(--blue-soft); color: var(--blue); }
+    .level-badge.lv-B1\+ { background: rgba(224,122,95,.14); color: var(--accent-dark); }
+
+    .path-row { margin-top: 14px; }
+    .path-row-head {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .path-row-title { font-weight: 800; font-size: .95rem; }
+    .path-row-desc { font-size: .82rem; color: var(--muted); }
+    .path-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .path-chip {
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--ink);
+      font-size: .82rem;
+      cursor: pointer;
+    }
+    .path-chip:hover { border-color: var(--accent); color: var(--accent-dark); }
+    .path-chip.done { border-color: var(--green); color: var(--green); }
+
+    #dialogue.blind .line .en, #dialogue.blind .line .zh { visibility: hidden; }
+    #dialogue.blind .line.active .bubble { border-color: var(--accent); }
     .btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
 
     .cover-card {
@@ -208,7 +295,7 @@
       height: auto;
       display: block;
       border-radius: 18px;
-      background: #FFF8F1;
+      background: var(--warm-2);
     }
 
     .feature-grid {
@@ -219,7 +306,7 @@
     }
 
     .feature {
-      background: #fff;
+      background: var(--panel);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 16px;
@@ -265,6 +352,26 @@
       transition: width .4s ease;
     }
 
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .stats-num {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent-dark);
+    }
+
+    .stats-label {
+      display: block;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+
     .map-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -272,7 +379,7 @@
     }
 
     .map-card {
-      background: #fff;
+      background: var(--panel);
       border-radius: var(--radius);
       padding: 18px;
       border: 1px solid var(--border);
@@ -314,7 +421,7 @@
     }
 
     .chapter-header {
-      background: linear-gradient(135deg, #FFF8F1, #fff);
+      background: linear-gradient(135deg, var(--warm-2), var(--panel));
       border: 1px solid var(--border);
       border-radius: 24px;
       padding: 20px;
@@ -334,7 +441,7 @@
 
     .chapter-tab {
       border: 1px solid var(--border);
-      background: #fff;
+      background: var(--panel);
       color: var(--muted);
       border-radius: 999px;
       padding: 9px 15px;
@@ -343,7 +450,7 @@
       transition: .18s ease;
     }
 
-    .chapter-tab:hover { color: var(--ink); background: #FFF8F1; }
+    .chapter-tab:hover { color: var(--ink); background: var(--warm-2); }
     .chapter-tab.active {
       background: var(--blue);
       border-color: var(--blue);
@@ -360,7 +467,7 @@
 
     .dialogue-tab {
       border: 1px dashed var(--border);
-      background: #fff;
+      background: var(--panel);
       color: var(--muted);
       border-radius: 12px;
       padding: 8px 14px;
@@ -370,7 +477,7 @@
       transition: .18s ease;
     }
 
-    .dialogue-tab:hover { color: var(--ink); background: #FFF8F1; }
+    .dialogue-tab:hover { color: var(--ink); background: var(--warm-2); }
     .dialogue-tab.active {
       background: var(--accent);
       border: 1px solid var(--accent);
@@ -382,7 +489,7 @@
       width: min(340px, 38vw);
       border-radius: 18px;
       display: block;
-      background: #FFF8F1;
+      background: var(--warm-2);
       flex-shrink: 0;
     }
 
@@ -424,7 +531,7 @@
 
     select {
       border: 1px solid var(--border);
-      background: #fff;
+      background: var(--panel);
       color: var(--ink);
       padding: 9px 10px;
       border-radius: 10px;
@@ -487,7 +594,7 @@
       bottom: 18px;
       transform: translate(-50%, calc(100% + 28px));
       width: min(620px, calc(100% - 28px));
-      background: #FFFFFF;
+      background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 22px;
       box-shadow: 0 18px 42px rgba(38,51,61,.2);
@@ -510,7 +617,7 @@
       justify-content: space-between;
       gap: 14px;
       padding: 18px 18px 14px;
-      background: linear-gradient(135deg, #FFF8F1, #FFFFFF);
+      background: linear-gradient(135deg, var(--warm-2), var(--panel));
       border-bottom: 1px solid var(--border);
     }
 
@@ -565,7 +672,7 @@
       border-radius: 12px;
       padding: 10px 12px;
       font-family: inherit;
-      background: #fff;
+      background: var(--panel);
     }
 
     .vocab-grid {
@@ -614,7 +721,7 @@
       height: 34px;
       border-radius: 10px;
       border: 1px solid var(--border);
-      background: #fff;
+      background: var(--panel);
       color: #A89B8B;
       display: grid;
       place-items: center;
@@ -628,7 +735,7 @@
 
     .review-stage {
       min-height: 280px;
-      background: linear-gradient(135deg, #FFF8F1, #FFFFFF);
+      background: linear-gradient(135deg, var(--warm-2), var(--panel));
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 22px;
@@ -670,7 +777,7 @@
     }
 
     .empty-state {
-      background: #fff;
+      background: var(--panel);
       border: 1px dashed var(--border);
       border-radius: 18px;
       padding: 28px;
@@ -682,7 +789,7 @@
       height: 38px;
       border-radius: 12px;
       border: 1px solid var(--border);
-      background: #fff;
+      background: var(--panel);
       cursor: pointer;
       display: grid;
       place-items: center;
@@ -752,13 +859,13 @@
       border-radius: 18px;
       padding: 12px;
       border: 1px solid var(--border);
-      background: #fff;
+      background: var(--panel);
       cursor: pointer;
       transition: .18s ease;
     }
 
     .line:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(38,51,61,.07); }
-    .line.active { background: #FFF8F1; border-color: #EFCDB8; }
+    .line.active { background: var(--warm-2); border-color: #EFCDB8; }
     .line.customer { margin-left: 56px; flex-direction: row-reverse; }
     .line.customer .bubble { background: var(--blue-soft); }
     .line.customer .line-meta { text-align: right; }
@@ -811,7 +918,7 @@
     }
 
     .roleplay-panel {
-      background: #FFF8F1;
+      background: var(--warm-2);
       border: 1px solid #F0DACB;
       border-radius: 16px;
       padding: 14px;
@@ -950,7 +1057,7 @@
     }
 
     .tips {
-      background: #FFF8F1;
+      background: var(--warm-2);
       border: 1px solid #F0DACB;
       color: #7A6653;
       border-radius: 14px;
@@ -1001,7 +1108,7 @@
     <section id="page-cover" class="page active">
       <div class="cover">
         <div class="cover-copy">
-          <div class="eyebrow">✨ Demo v3 · 28 Complete Scenes</div>
+          <div class="eyebrow">✨ Demo v4 · 28 Complete Scenes</div>
           <h1>英语口语<br>从小白到大师</h1>
           <p class="lead">
             这不是一本用来“看”的书，而是一个可以点击发音、逐句跟读、角色扮演的口语训练场。
@@ -1073,6 +1180,40 @@
         </div>
         <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
         <p class="zh" style="margin-top:10px;">目前包含 28 个完整生活场景章节。</p>
+      </div>
+
+      <div class="progress-card" id="stats-card">
+        <h3>学习统计</h3>
+        <div class="stats-grid">
+          <div>
+            <span class="stats-num" id="stats-streak">0 天</span>
+            <span class="stats-label">连续打卡</span>
+          </div>
+          <div>
+            <span class="stats-num" id="stats-today">0 / 10</span>
+            <span class="stats-label">今日练习（次）</span>
+          </div>
+        </div>
+        <div class="progress-bar" style="margin-top:12px;"><div class="progress-fill" id="stats-fill" style="width:0%"></div></div>
+        <p class="zh" id="stats-today-note" style="margin-top:8px;">跟读打分、复习卡片、提交测验都会计入今日练习。</p>
+      </div>
+
+      <div class="progress-card" id="path-card">
+        <h3>推荐学习路径</h3>
+        <p class="zh" style="margin-top:4px;">按 A2 → B1 → B1+ 三级进阶，先通关再进入下一级；每一级内按章节顺序学。</p>
+        <div id="path-rows"></div>
+      </div>
+
+      <div class="progress-card" id="line-review-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:14px;">
+          <h3>跟读复习</h3>
+          <strong id="line-review-count">0 句</strong>
+        </div>
+        <p class="zh" style="margin-top:6px;">跟读打分不满 85 分的句子会自动进入这里，复习时达到 85 分即移出。</p>
+        <div class="controls" style="margin-top:12px;">
+          <button class="btn btn-primary btn-sm" onclick="startLineReview()">开始复习</button>
+        </div>
+        <div id="line-review-panel" style="display:none; margin-top:14px; border-top:1px dashed var(--border); padding-top:12px;"></div>
       </div>
 
       <div class="map-grid">
@@ -1466,7 +1607,7 @@
           <text x="325" y="164" text-anchor="middle" font-size="27">🚀</text>
         </svg>
         <div>
-          <div class="chapter-no" id="chapter-label">Chapter 01 · Complete Demo</div>
+          <div class="chapter-no"><span id="chapter-label">Chapter 01 · Complete Demo</span> <span class="level-badge" id="chapter-level-badge">A2</span></div>
           <h2 id="chapter-title" style="margin:8px 0 10px;">Coffee Shop</h2>
           <p class="lead" id="chapter-lead">
             学完这一章，你可以自然地在咖啡店点单、选择杯型、决定带走或堂食、询问价格并完成支付。
@@ -1486,6 +1627,8 @@
           </div>
         </div>
             <select id="speed-select" onchange="saveSettings()" aria-label="Speed">
+              <option value="faster">⚡⚡ 1.5x Fast</option>
+              <option value="fast">⚡ 1.25x Fast</option>
               <option value="normal">Normal speed</option>
               <option value="slow">🐢 Slow</option>
               <option value="turtle">🐢🐢 Turtle</option>
@@ -1514,14 +1657,18 @@
         </div>
         <div class="playbar">
           <button class="playbar-main" onclick="playScene()">▶ 一键播放完整对话</button>
+          <button class="btn btn-sm" onclick="playScene({ native: true })" title="接近母语语速播放并隐藏文本，纯听感挑战">🚀 原速挑战</button>
+          <button class="btn btn-sm" onclick="prevSentence()" title="上一句（←）">⏮</button>
           <button class="btn btn-sm" onclick="togglePlaybackPause()" id="pause-button">⏸ 暂停</button>
+          <button class="btn btn-sm" onclick="nextSentence()" title="下一句（→）">⏭</button>
+          <button class="btn btn-sm" onclick="toggleSentenceLoop()" id="loop-button" title="单句循环：点击句子后重复播放">🔁</button>
           <button class="btn btn-sm" onclick="stopPlayback()">⏹ 停止</button>
           <span class="playbar-status" id="playback-status">Ready to play</span>
         </div>
-        <p class="zh" style="margin-top:14px;">点击 <strong>一键播放完整对话</strong>，系统会按顺序切换 Barista 和 You 的声音；也可以点击任意英文句子单独播放。点击具体单词，可查看发音、翻译和例句。</p>
+        <p class="zh" style="margin-top:14px;">点击 <strong>一键播放完整对话</strong>，系统会按顺序切换 Barista 和 You 的声音；也可以点击任意英文句子单独播放。<strong>🚀 原速挑战</strong> 会以接近母语的语速播放并隐藏全部文本，练纯听感（点击任意句子可提前“看答案”）。点击具体单词，可查看发音、翻译和例句。</p>
         <div class="dialogue-tabs" id="dialogue-tabs"></div>
         <div class="dialogue" id="dialogue"></div>
-        <div class="card" style="box-shadow:none; margin-top:16px; margin-bottom:0; background:#FFF8F1;">
+        <div class="card" style="box-shadow:none; margin-top:16px; margin-bottom:0; background:var(--warm-2);">
           <h3>🎭 角色扮演</h3>
           <p class="zh">选择你要扮演的角色。系统会朗读对方台词，轮到你时暂停。</p>
           <div class="controls">
@@ -1534,6 +1681,7 @@
           <p id="roleplay-hint" class="zh"></p>
           <div class="controls">
             <button class="btn btn-blue btn-sm" onclick="roleplayNext()">✅ 我说完了，继续</button>
+            <button class="btn btn-ghost btn-sm" onclick="listenAndScore(roleplayIndex)">🎤 朗读打分</button>
             <button class="btn btn-ghost btn-sm" onclick="speakCurrentRoleplayLine()">🔊 再听一次示范</button>
             <button class="btn btn-ghost btn-sm" onclick="stopPlayback()">⏹ 停止</button>
           </div>
@@ -1598,6 +1746,7 @@
         <input id="vocab-search" class="vocab-search" placeholder="搜索单词或中文释义" oninput="renderVocab()">
         <select id="vocab-filter" onchange="renderVocab()">
           <option value="all">全部单词</option>
+          <option value="due">今日待复习</option>
           <option value="new">新词 / 待巩固</option>
           <option value="mastered">已掌握</option>
         </select>
@@ -1618,12 +1767,15 @@
             <div id="review-example"></div>
           </div>
         </div>
+        <p class="zh" id="review-queue-note" style="text-align:center; margin-top:10px;"></p>
         <div class="controls" style="margin-top:14px; justify-content:center;">
           <button class="btn btn-ghost" onclick="previousReviewCard()">← 上一个</button>
-          <button class="btn btn-ghost" onclick="markReviewCard(false)">🔁 还不熟</button>
-          <button class="btn btn-primary" onclick="markReviewCard(true)">✅ 记住了</button>
+          <button class="btn btn-ghost" onclick="markReviewCard('forgot')">😣 不会</button>
+          <button class="btn btn-ghost" onclick="markReviewCard('fuzzy')">😐 模糊</button>
+          <button class="btn btn-primary" onclick="markReviewCard('know')">😄 认识</button>
           <button class="btn btn-ghost" onclick="closeReview()">关闭复习</button>
         </div>
+        <p class="zh" style="text-align:center; margin-top:8px;">认识 → 间隔拉长；模糊 → 4 小时后再见；不会 → 10 分钟后重来。</p>
       </div>
 
       <div id="vocab-empty" class="empty-state">
@@ -1643,12 +1795,36 @@
       </div>
       <div class="card">
         <h3>发音速度</h3>
-        <p class="zh">如果句子太快，可以先使用 Turtle speed。</p>
+        <p class="zh">觉得示范太慢可切换 1.25x / 1.5x；听不清时用 Slow / Turtle。</p>
         <select id="speed-select-2" onchange="syncSpeedSelects(); saveSettings();">
+          <option value="faster">⚡⚡ 1.5x Fast</option>
+          <option value="fast">⚡ 1.25x Fast</option>
           <option value="normal">Normal speed</option>
           <option value="slow">🐢 Slow</option>
           <option value="turtle">🐢🐢 Turtle</option>
         </select>
+      </div>
+      <div class="card">
+        <h3>外观</h3>
+        <p class="zh">深色模式可跟随系统，或手动固定。</p>
+        <select id="theme-select" onchange="setTheme(this.value)">
+          <option value="auto">🌓 跟随系统</option>
+          <option value="light">☀️ 浅色</option>
+          <option value="dark">🌙 深色</option>
+        </select>
+      </div>
+      <div class="card">
+        <h3>每日目标</h3>
+        <p class="zh">跟读打分、复习卡片、提交测验都会计入今日练习次数。</p>
+        <select id="daily-goal-select" onchange="setDailyGoal(this.value)">
+          <option value="5">轻松 · 每天 5 次</option>
+          <option value="10">标准 · 每天 10 次</option>
+          <option value="20">强化 · 每天 20 次</option>
+        </select>
+      </div>
+      <div class="card">
+        <h3>键盘快捷键</h3>
+        <p class="zh">空格 播放 / 暂停 · ← → 上一句 / 下一句 · R 慢速重听当前句</p>
       </div>
       <div class="card">
         <h3>中文显示</h3>
@@ -1690,7 +1866,7 @@
   </aside>
 
   <footer>
-    英语口语从小白到大师 · 互动网页书 Demo v3 · 28 Complete Scenes · Built with HTML, CSS &amp; Web Speech API
+    英语口语从小白到大师 · 互动网页书 Demo v4 · 28 Complete Scenes · Built with HTML, CSS &amp; Web Speech API
   </footer>
 
   <script>
@@ -1710,12 +1886,16 @@
       quizScore: null,
       quizScores: {},
       lastChapter: "coffee",
-      savedWords: {}
+      savedWords: {},
+      activity: {},
+      lineReviews: {}
     };
 
     let settings = {
       speed: "normal",
-      hideChinese: false
+      hideChinese: false,
+      theme: "auto",
+      dailyGoal: 10
     };
 
     const roles = {
@@ -10869,7 +11049,30 @@
       $("#speed-select-2").value = settings.speed;
       $("#hide-chinese").checked = settings.hideChinese;
       $("#hide-chinese-2").checked = settings.hideChinese;
+      $("#theme-select").value = settings.theme || "auto";
+      $("#daily-goal-select").value = String(settings.dailyGoal || 10);
+      applyTheme();
       toggleChinese();
+    }
+
+    function setTheme(theme) {
+      settings.theme = theme;
+      applyTheme();
+      saveStorage();
+    }
+
+    function applyTheme() {
+      const theme = settings.theme || "auto";
+      const root = document.documentElement;
+      if (theme === "dark") root.dataset.theme = "dark";
+      else if (theme === "light") root.dataset.theme = "light";
+      else delete root.dataset.theme;
+    }
+
+    function setDailyGoal(value) {
+      settings.dailyGoal = Number(value) || 10;
+      saveStorage();
+      renderStats();
     }
 
     function showPage(page) {
@@ -11096,6 +11299,11 @@ Object.assign(chapterDialogues, {
         });
       });
       $("#chapter-label").textContent = chapter.label;
+      const levelBadge = $("#chapter-level-badge");
+      if (levelBadge) {
+        levelBadge.textContent = chapterLevels[chapterId] || "";
+        levelBadge.className = "level-badge lv-" + (chapterLevels[chapterId] || "");
+      }
       $("#chapter-title").textContent = chapter.title;
       $("#chapter-lead").textContent = chapter.lead;
 
@@ -11287,13 +11495,27 @@ Object.assign(chapterDialogues, {
           zh: entry ? entry.zh : "本 Demo 暂未收录释义",
           box: 0,
           addedAt: Date.now(),
-          lastReviewed: null
+          lastReviewed: null,
+          due: 0
         };
       }
 
       saveStorage();
       syncFavoriteButton();
       renderVocab();
+    }
+
+    function isWordDue(item, now = Date.now()) {
+      return !item.due || item.due <= now;
+    }
+
+    function dueLabel(item) {
+      if (isWordDue(item)) return "今日待复习";
+      const diff = item.due - Date.now();
+      const hours = Math.round(diff / 3600000);
+      if (hours < 1) return `${Math.max(1, Math.round(diff / 60000))} 分钟后复习`;
+      if (hours < 24) return `${hours} 小时后复习`;
+      return `${Math.round(hours / 24)} 天后复习`;
     }
 
     function renderVocab() {
@@ -11307,6 +11529,8 @@ Object.assign(chapterDialogues, {
         words = words.filter(item => item.box < 3);
       } else if (filter === "mastered") {
         words = words.filter(item => item.box >= 3);
+      } else if (filter === "due") {
+        words = words.filter(item => item.box < 3 && isWordDue(item));
       }
 
       if (search) {
@@ -11319,9 +11543,11 @@ Object.assign(chapterDialogues, {
         });
       }
 
-      const totalCount = getSavedWords().length;
-      const masteredCount = getSavedWords().filter(item => item.box >= 3).length;
-      $("#vocab-count").textContent = `${totalCount} words · ${masteredCount} mastered`;
+      const all = getSavedWords();
+      const totalCount = all.length;
+      const masteredCount = all.filter(item => item.box >= 3).length;
+      const dueCount = all.filter(item => item.box < 3 && isWordDue(item)).length;
+      $("#vocab-count").textContent = `${totalCount} words · ${masteredCount} mastered · ${dueCount} to review`;
 
       const hasWords = totalCount > 0;
       grid.style.display = hasWords ? "grid" : "none";
@@ -11332,6 +11558,7 @@ Object.assign(chapterDialogues, {
         const card = document.createElement("div");
         card.className = "word-card";
         card.onclick = () => openWord(item.word);
+        const statusText = item.box >= 3 ? "✔ 已掌握" : `● ${dueLabel(item)}`;
         card.innerHTML = `
           <div class="word-card-head">
             <div>
@@ -11341,7 +11568,7 @@ Object.assign(chapterDialogues, {
             <button class="star-btn faved" onclick="event.stopPropagation(); removeFromVocab('${item.token}')" aria-label="Remove word">✕</button>
           </div>
           <div class="zh">${item.zh}</div>
-          <div class="status" style="margin-top:10px;">${item.box >= 3 ? "✔ 已掌握" : "● 待巩固"}</div>
+          <div class="status" style="margin-top:10px;">${statusText}</div>
         `;
         grid.appendChild(card);
       });
@@ -11355,6 +11582,33 @@ Object.assign(chapterDialogues, {
       syncFavoriteButton();
     }
 
+    const SRS_INTERVALS = [
+      10 * 60 * 1000,        // box 0：10 分钟
+      24 * 60 * 60 * 1000,   // box 1：1 天
+      3 * 24 * 60 * 60 * 1000,  // box 2：3 天
+      7 * 24 * 60 * 60 * 1000, // box 3：7 天
+      21 * 24 * 60 * 60 * 1000 // box 4：21 天
+    ];
+    let reviewQueue = [];
+    let reviewQueueMode = "due";
+
+    function buildReviewQueue() {
+      const now = Date.now();
+      const words = getSavedWords();
+      const dueWords = words
+        .filter(item => item.box < 3 && isWordDue(item, now))
+        .sort((a, b) => (a.due || 0) - (b.due || 0));
+      if (dueWords.length) {
+        reviewQueueMode = "due";
+        return dueWords.map(item => item.token);
+      }
+      reviewQueueMode = "all";
+      return words
+        .slice()
+        .sort((a, b) => (a.lastReviewed || 0) - (b.lastReviewed || 0))
+        .map(item => item.token);
+    }
+
     function startReview() {
       const words = getSavedWords();
       if (!words.length) {
@@ -11362,6 +11616,7 @@ Object.assign(chapterDialogues, {
         return;
       }
 
+      reviewQueue = buildReviewQueue();
       reviewIndex = 0;
       $("#review-area").style.display = "block";
       $("#review-area").scrollIntoView({ block: "start", behavior: "smooth" });
@@ -11373,22 +11628,30 @@ Object.assign(chapterDialogues, {
     }
 
     function renderReviewCard() {
-      const words = getSavedWords();
-      if (!words.length) {
+      if (!reviewQueue.length) {
         closeReview();
         renderVocab();
         return;
       }
 
-      reviewIndex = Math.max(0, Math.min(reviewIndex, words.length - 1));
-      const item = words[reviewIndex];
-      const entry = findWordEntry(item.token);
+      reviewIndex = Math.max(0, Math.min(reviewIndex, reviewQueue.length - 1));
+      const token = reviewQueue[reviewIndex];
+      const item = progress.savedWords[token];
+      if (!item) {
+        reviewQueue.splice(reviewIndex, 1);
+        renderReviewCard();
+        return;
+      }
+      const entry = findWordEntry(token);
       currentWord = item.word;
 
       $("#review-word").textContent = item.word;
       $("#review-ipa").textContent = item.ipa || (entry ? entry.ipa : "Click to listen");
       $("#review-translation").textContent = item.zh;
       $("#review-box").textContent = item.box >= 3 ? "已掌握" : `Box ${item.box + 1} · 待巩固`;
+      $("#review-queue-note").textContent =
+        `第 ${reviewIndex + 1} / ${reviewQueue.length} 张 · ` +
+        (reviewQueueMode === "due" ? "今日待复习" : "暂无到期单词，按最久未复习练习");
 
       const example = entry && entry.examples && entry.examples[0];
       $("#review-example").innerHTML = example ? `
@@ -11424,7 +11687,7 @@ Object.assign(chapterDialogues, {
       button.textContent = visible ? "🙈 隐藏释义" : "👁 查看释义";
     }
 
-    function markReviewCard(known) {
+    function markReviewCard(grade) {
       const token = normalizeWordToken(currentWord);
       const saved = progress.savedWords[token];
       if (!saved) {
@@ -11432,16 +11695,25 @@ Object.assign(chapterDialogues, {
         return;
       }
 
-      saved.box = known ? Math.min(3, saved.box + 1) : 0;
+      if (grade === "know") {
+        saved.box = Math.min(SRS_INTERVALS.length - 1, (saved.box || 0) + 1);
+      } else if (grade === "forgot") {
+        saved.box = 0;
+      }
+      // fuzzy：box 不变，短间隔后再见
+      const interval = grade === "fuzzy"
+        ? 4 * 60 * 60 * 1000
+        : SRS_INTERVALS[Math.min(saved.box, SRS_INTERVALS.length - 1)];
+      saved.due = Date.now() + interval;
       saved.lastReviewed = Date.now();
+      trackActivity(1);
       saveStorage();
 
       const nextIndex = reviewIndex + 1;
-      const words = getSavedWords();
-      if (nextIndex >= words.length) {
+      if (nextIndex >= reviewQueue.length) {
         renderVocab();
         closeReview();
-        alert("本轮复习完成！");
+        alert("本轮复习完成！下次复习时间已按“认识 / 模糊 / 不会”安排。");
         return;
       }
 
@@ -11518,6 +11790,10 @@ Object.assign(chapterDialogues, {
               </label>
             `).join("")}
           </div>
+          <div class="quiz-review zh" id="quiz-review-${qIndex}" style="display:none; margin-top:8px;">
+            ✅ 正确答案：<span class="en">${renderEnglishText(q.options[q.answer])}</span>
+            <span class="zh" style="display:block; margin-top:2px;">（点击其中的生词可查看释义并收藏）</span>
+          </div>
         `;
         container.appendChild(block);
       });
@@ -11561,12 +11837,14 @@ Object.assign(chapterDialogues, {
     }
 
     function getSpeedFactor() {
+      if (settings.speed === "faster") return 1.5;
+      if (settings.speed === "fast") return 1.25;
       if (settings.speed === "slow") return 0.78;
       if (settings.speed === "turtle") return 0.62;
       return 1;
     }
 
-    function speakText(text, profile, emotion = "neutral", forceSlow = false) {
+    function speakText(text, profile, emotion = "neutral", forceSlow = false, rateFactor = null) {
       if (!("speechSynthesis" in window)) {
         alert("当前浏览器不支持语音合成。请尝试 Chrome、Edge 或 Safari。");
         return Promise.resolve();
@@ -11587,10 +11865,11 @@ Object.assign(chapterDialogues, {
           if (voice) utterance.voice = voice;
 
           const adjusted = emotionAdjust(emotion, profile.pitch, profile.rate);
+          const factor = rateFactor !== null ? rateFactor : getSpeedFactor();
           utterance.lang = profile.lang;
           utterance.pitch = Math.max(0.1, Math.min(2, adjusted.pitch));
           utterance.volume = profile.volume;
-          utterance.rate = Math.max(0.1, Math.min(2, adjusted.rate * getSpeedFactor() * (forceSlow ? 0.72 : 1)));
+          utterance.rate = Math.max(0.1, Math.min(2, adjusted.rate * factor * (forceSlow ? 0.72 : 1)));
 
           utterance.onend = () => resolve();
           utterance.onerror = () => resolve();
@@ -11628,6 +11907,7 @@ Object.assign(chapterDialogues, {
       "airport/ab9","airport/ac1","airport/ac10","airport/ac11","airport/ac12","airport/ac13",
       "airport/ac14","airport/ac2","airport/ac3","airport/ac4","airport/ac5","airport/ac6",
       "airport/ac7","airport/ac8","airport/ac9",
+
       "bank/ba1","bank/ba10","bank/ba11","bank/ba12","bank/ba13","bank/ba14",
       "bank/ba15","bank/ba2","bank/ba3","bank/ba4","bank/ba5","bank/ba6",
       "bank/ba7","bank/ba8","bank/ba9","bank/bk1","bank/bk10","bank/bk11",
@@ -11638,6 +11918,7 @@ Object.assign(chapterDialogues, {
       "bank/bn10","bank/bn11","bank/bn12","bank/bn13","bank/bn14","bank/bn2",
       "bank/bn3","bank/bn4","bank/bn5","bank/bn6","bank/bn7","bank/bn8",
       "bank/bn9",
+
       "coffee/cb1","coffee/cb10","coffee/cb11","coffee/cb12","coffee/cb13","coffee/cb14",
       "coffee/cb2","coffee/cb3","coffee/cb4","coffee/cb5","coffee/cb6","coffee/cb7",
       "coffee/cb8","coffee/cb9","coffee/cc1","coffee/cc10","coffee/cc11","coffee/cc12",
@@ -11648,6 +11929,7 @@ Object.assign(chapterDialogues, {
       "coffee/l24","coffee/l25","coffee/l26","coffee/l27","coffee/l28","coffee/l29",
       "coffee/l3","coffee/l4","coffee/l5","coffee/l6","coffee/l7","coffee/l8",
       "coffee/l9",
+
       "delivery/dg1","delivery/dg10","delivery/dg11","delivery/dg12","delivery/dg13","delivery/dg2",
       "delivery/dg3","delivery/dg4","delivery/dg5","delivery/dg6","delivery/dg7","delivery/dg8",
       "delivery/dg9","delivery/dh1","delivery/dh10","delivery/dh11","delivery/dh12","delivery/dh13",
@@ -11657,6 +11939,7 @@ Object.assign(chapterDialogues, {
       "delivery/fd19","delivery/fd2","delivery/fd20","delivery/fd21","delivery/fd22","delivery/fd23",
       "delivery/fd24","delivery/fd25","delivery/fd3","delivery/fd4","delivery/fd5","delivery/fd6",
       "delivery/fd7","delivery/fd8","delivery/fd9",
+
       "directions/d1","directions/d10","directions/d11","directions/d12","directions/d13","directions/d14",
       "directions/d15","directions/d16","directions/d17","directions/d18","directions/d19","directions/d2",
       "directions/d20","directions/d21","directions/d22","directions/d23","directions/d24","directions/d25",
@@ -11666,6 +11949,7 @@ Object.assign(chapterDialogues, {
       "directions/db5","directions/db6","directions/db7","directions/db8","directions/db9","directions/dc1",
       "directions/dc10","directions/dc11","directions/dc12","directions/dc13","directions/dc2","directions/dc3",
       "directions/dc4","directions/dc5","directions/dc6","directions/dc7","directions/dc8","directions/dc9",
+
       "doctor/da1","doctor/da10","doctor/da11","doctor/da12","doctor/da13","doctor/da14",
       "doctor/da2","doctor/da3","doctor/da4","doctor/da5","doctor/da6","doctor/da7",
       "doctor/da8","doctor/da9","doctor/de1","doctor/de10","doctor/de11","doctor/de12",
@@ -11676,6 +11960,7 @@ Object.assign(chapterDialogues, {
       "doctor/dv22","doctor/dv23","doctor/dv24","doctor/dv25","doctor/dv26","doctor/dv27",
       "doctor/dv3","doctor/dv4","doctor/dv5","doctor/dv6","doctor/dv7","doctor/dv8",
       "doctor/dv9",
+
       "emergency/ea1","emergency/ea10","emergency/ea11","emergency/ea12","emergency/ea13","emergency/ea14",
       "emergency/ea2","emergency/ea3","emergency/ea4","emergency/ea5","emergency/ea6","emergency/ea7",
       "emergency/ea8","emergency/ea9","emergency/ee1","emergency/ee10","emergency/ee11","emergency/ee12",
@@ -11685,6 +11970,7 @@ Object.assign(chapterDialogues, {
       "emergency/em17","emergency/em18","emergency/em19","emergency/em2","emergency/em20","emergency/em21",
       "emergency/em22","emergency/em23","emergency/em24","emergency/em25","emergency/em3","emergency/em4",
       "emergency/em5","emergency/em6","emergency/em7","emergency/em8","emergency/em9",
+
       "experiences/e1","experiences/e10","experiences/e11","experiences/e12","experiences/e13","experiences/e14",
       "experiences/e15","experiences/e16","experiences/e17","experiences/e18","experiences/e19","experiences/e2",
       "experiences/e20","experiences/e21","experiences/e22","experiences/e23","experiences/e24","experiences/e25",
@@ -11694,6 +11980,7 @@ Object.assign(chapterDialogues, {
       "experiences/eb7","experiences/eb8","experiences/eb9","experiences/ec1","experiences/ec10","experiences/ec11",
       "experiences/ec12","experiences/ec13","experiences/ec2","experiences/ec3","experiences/ec4","experiences/ec5",
       "experiences/ec6","experiences/ec7","experiences/ec8","experiences/ec9",
+
       "gym/ga1","gym/ga10","gym/ga11","gym/ga12","gym/ga13","gym/ga14",
       "gym/ga2","gym/ga3","gym/ga4","gym/ga5","gym/ga6","gym/ga7",
       "gym/ga8","gym/ga9","gym/ge1","gym/ge10","gym/ge11","gym/ge12",
@@ -11703,6 +11990,7 @@ Object.assign(chapterDialogues, {
       "gym/gy17","gym/gy18","gym/gy19","gym/gy2","gym/gy20","gym/gy21",
       "gym/gy22","gym/gy23","gym/gy24","gym/gy25","gym/gy26","gym/gy3",
       "gym/gy4","gym/gy5","gym/gy6","gym/gy7","gym/gy8","gym/gy9",
+
       "hotel/h1","hotel/h10","hotel/h11","hotel/h12","hotel/h13","hotel/h14",
       "hotel/h15","hotel/h16","hotel/h17","hotel/h18","hotel/h19","hotel/h2",
       "hotel/h20","hotel/h21","hotel/h22","hotel/h23","hotel/h24","hotel/h25",
@@ -11713,6 +12001,7 @@ Object.assign(chapterDialogues, {
       "hotel/hb9","hotel/hc1","hotel/hc10","hotel/hc11","hotel/hc12","hotel/hc13",
       "hotel/hc14","hotel/hc2","hotel/hc3","hotel/hc4","hotel/hc5","hotel/hc6",
       "hotel/hc7","hotel/hc8","hotel/hc9",
+
       "interview/ib1","interview/ib10","interview/ib11","interview/ib12","interview/ib13","interview/ib2",
       "interview/ib3","interview/ib4","interview/ib5","interview/ib6","interview/ib7","interview/ib8",
       "interview/ib9","interview/ic1","interview/ic10","interview/ic11","interview/ic12","interview/ic2",
@@ -11722,6 +12011,7 @@ Object.assign(chapterDialogues, {
       "interview/iv2","interview/iv20","interview/iv21","interview/iv22","interview/iv23","interview/iv24",
       "interview/iv25","interview/iv26","interview/iv27","interview/iv28","interview/iv29","interview/iv3",
       "interview/iv4","interview/iv5","interview/iv6","interview/iv7","interview/iv8","interview/iv9",
+
       "market/mk1","market/mk10","market/mk11","market/mk12","market/mk13","market/mk14",
       "market/mk15","market/mk16","market/mk17","market/mk2","market/mk3","market/mk4",
       "market/mk5","market/mk6","market/mk7","market/mk8","market/mk9","market/mo1",
@@ -11730,6 +12020,7 @@ Object.assign(chapterDialogues, {
       "market/mo9","market/mu1","market/mu10","market/mu11","market/mu12","market/mu13",
       "market/mu14","market/mu2","market/mu3","market/mu4","market/mu5","market/mu6",
       "market/mu7","market/mu8","market/mu9",
+
       "movies/ma1","movies/ma10","movies/ma11","movies/ma12","movies/ma2","movies/ma3",
       "movies/ma4","movies/ma5","movies/ma6","movies/ma7","movies/ma8","movies/ma9",
       "movies/mi1","movies/mi10","movies/mi11","movies/mi12","movies/mi13","movies/mi2",
@@ -11739,6 +12030,7 @@ Object.assign(chapterDialogues, {
       "movies/mv2","movies/mv20","movies/mv21","movies/mv22","movies/mv23","movies/mv24",
       "movies/mv25","movies/mv3","movies/mv4","movies/mv5","movies/mv6","movies/mv7",
       "movies/mv8","movies/mv9",
+
       "opinions/o1","opinions/o10","opinions/o11","opinions/o12","opinions/o13","opinions/o14",
       "opinions/o15","opinions/o16","opinions/o17","opinions/o18","opinions/o19","opinions/o2",
       "opinions/o20","opinions/o21","opinions/o22","opinions/o23","opinions/o24","opinions/o25",
@@ -11748,6 +12040,7 @@ Object.assign(chapterDialogues, {
       "opinions/ob6","opinions/ob7","opinions/ob8","opinions/ob9","opinions/oc1","opinions/oc10",
       "opinions/oc11","opinions/oc12","opinions/oc13","opinions/oc2","opinions/oc3","opinions/oc4",
       "opinions/oc5","opinions/oc6","opinions/oc7","opinions/oc8","opinions/oc9",
+
       "party/pj1","party/pj10","party/pj11","party/pj12","party/pj13","party/pj2",
       "party/pj3","party/pj4","party/pj5","party/pj6","party/pj7","party/pj8",
       "party/pj9","party/pk1","party/pk10","party/pk11","party/pk12","party/pk13",
@@ -11757,6 +12050,7 @@ Object.assign(chapterDialogues, {
       "party/pt19","party/pt2","party/pt20","party/pt21","party/pt22","party/pt23",
       "party/pt24","party/pt25","party/pt26","party/pt3","party/pt4","party/pt5",
       "party/pt6","party/pt7","party/pt8","party/pt9",
+
       "phone/pc1","phone/pc10","phone/pc11","phone/pc12","phone/pc13","phone/pc14",
       "phone/pc15","phone/pc16","phone/pc17","phone/pc18","phone/pc19","phone/pc2",
       "phone/pc20","phone/pc21","phone/pc22","phone/pc23","phone/pc24","phone/pc25",
@@ -11767,6 +12061,7 @@ Object.assign(chapterDialogues, {
       "phone/pe1","phone/pe10","phone/pe11","phone/pe12","phone/pe13","phone/pe14",
       "phone/pe2","phone/pe3","phone/pe4","phone/pe5","phone/pe6","phone/pe7",
       "phone/pe8","phone/pe9",
+
       "plans/p1","plans/p10","plans/p11","plans/p12","plans/p13","plans/p14",
       "plans/p15","plans/p16","plans/p17","plans/p18","plans/p19","plans/p2",
       "plans/p20","plans/p21","plans/p22","plans/p23","plans/p24","plans/p25",
@@ -11777,6 +12072,7 @@ Object.assign(chapterDialogues, {
       "plans/pc10","plans/pc11","plans/pc12","plans/pc13","plans/pc14","plans/pc2",
       "plans/pc3","plans/pc4","plans/pc5","plans/pc6","plans/pc7","plans/pc8",
       "plans/pc9",
+
       "post/pm1","post/pm10","post/pm11","post/pm12","post/pm13","post/pm14",
       "post/pm2","post/pm3","post/pm4","post/pm5","post/pm6","post/pm7",
       "post/pm8","post/pm9","post/pn1","post/pn10","post/pn11","post/pn12",
@@ -11786,6 +12082,7 @@ Object.assign(chapterDialogues, {
       "post/po17","post/po18","post/po19","post/po2","post/po20","post/po21",
       "post/po22","post/po23","post/po24","post/po25","post/po26","post/po3",
       "post/po4","post/po5","post/po6","post/po7","post/po8","post/po9",
+
       "presentation/pr1","presentation/pr10","presentation/pr11","presentation/pr12","presentation/pr13","presentation/pr2",
       "presentation/pr3","presentation/pr4","presentation/pr5","presentation/pr6","presentation/pr7","presentation/pr8",
       "presentation/pr9","presentation/pu1","presentation/pu10","presentation/pu11","presentation/pu12","presentation/pu13",
@@ -11795,6 +12092,7 @@ Object.assign(chapterDialogues, {
       "presentation/pv19","presentation/pv2","presentation/pv20","presentation/pv21","presentation/pv22","presentation/pv23",
       "presentation/pv24","presentation/pv25","presentation/pv26","presentation/pv27","presentation/pv3","presentation/pv4",
       "presentation/pv5","presentation/pv6","presentation/pv7","presentation/pv8","presentation/pv9",
+
       "rental/ra1","rental/ra10","rental/ra11","rental/ra12","rental/ra13","rental/ra14",
       "rental/ra2","rental/ra3","rental/ra4","rental/ra5","rental/ra6","rental/ra7",
       "rental/ra8","rental/ra9","rental/re1","rental/re10","rental/re11","rental/re12",
@@ -11803,6 +12101,7 @@ Object.assign(chapterDialogues, {
       "rental/rn11","rental/rn12","rental/rn13","rental/rn14","rental/rn15","rental/rn16",
       "rental/rn17","rental/rn2","rental/rn3","rental/rn4","rental/rn5","rental/rn6",
       "rental/rn7","rental/rn8","rental/rn9",
+
       "renting/al1","renting/al10","renting/al11","renting/al12","renting/al13","renting/al14",
       "renting/al2","renting/al3","renting/al4","renting/al5","renting/al6","renting/al7",
       "renting/al8","renting/al9","renting/am1","renting/am10","renting/am11","renting/am12",
@@ -11811,6 +12110,7 @@ Object.assign(chapterDialogues, {
       "renting/ap11","renting/ap12","renting/ap13","renting/ap14","renting/ap15","renting/ap16",
       "renting/ap17","renting/ap2","renting/ap3","renting/ap4","renting/ap5","renting/ap6",
       "renting/ap7","renting/ap8","renting/ap9",
+
       "restaurant/r1","restaurant/r10","restaurant/r11","restaurant/r12","restaurant/r13","restaurant/r14",
       "restaurant/r15","restaurant/r16","restaurant/r17","restaurant/r18","restaurant/r19","restaurant/r2",
       "restaurant/r20","restaurant/r21","restaurant/r22","restaurant/r23","restaurant/r24","restaurant/r25",
@@ -11821,6 +12121,7 @@ Object.assign(chapterDialogues, {
       "restaurant/rb9","restaurant/rc1","restaurant/rc10","restaurant/rc11","restaurant/rc12","restaurant/rc2",
       "restaurant/rc3","restaurant/rc4","restaurant/rc5","restaurant/rc6","restaurant/rc7","restaurant/rc8",
       "restaurant/rc9",
+
       "shopping/s1","shopping/s10","shopping/s11","shopping/s12","shopping/s13","shopping/s14",
       "shopping/s15","shopping/s16","shopping/s17","shopping/s18","shopping/s19","shopping/s2",
       "shopping/s20","shopping/s21","shopping/s22","shopping/s23","shopping/s24","shopping/s25",
@@ -11830,6 +12131,7 @@ Object.assign(chapterDialogues, {
       "shopping/sb4","shopping/sb5","shopping/sb6","shopping/sb7","shopping/sb8","shopping/sb9",
       "shopping/sc1","shopping/sc10","shopping/sc11","shopping/sc12","shopping/sc2","shopping/sc3",
       "shopping/sc4","shopping/sc5","shopping/sc6","shopping/sc7","shopping/sc8","shopping/sc9",
+
       "smalltalk/t1","smalltalk/t10","smalltalk/t11","smalltalk/t12","smalltalk/t13","smalltalk/t14",
       "smalltalk/t15","smalltalk/t16","smalltalk/t17","smalltalk/t18","smalltalk/t19","smalltalk/t2",
       "smalltalk/t20","smalltalk/t21","smalltalk/t22","smalltalk/t23","smalltalk/t24","smalltalk/t25",
@@ -11840,6 +12142,7 @@ Object.assign(chapterDialogues, {
       "smalltalk/tc10","smalltalk/tc11","smalltalk/tc12","smalltalk/tc13","smalltalk/tc14","smalltalk/tc2",
       "smalltalk/tc3","smalltalk/tc4","smalltalk/tc5","smalltalk/tc6","smalltalk/tc7","smalltalk/tc8",
       "smalltalk/tc9",
+
       "stories/s1","stories/s10","stories/s11","stories/s12","stories/s13","stories/s14",
       "stories/s15","stories/s16","stories/s17","stories/s18","stories/s19","stories/s2",
       "stories/s20","stories/s21","stories/s22","stories/s23","stories/s24","stories/s25",
@@ -11850,6 +12153,7 @@ Object.assign(chapterDialogues, {
       "stories/sv1","stories/sv10","stories/sv11","stories/sv12","stories/sv13","stories/sv2",
       "stories/sv3","stories/sv4","stories/sv5","stories/sv6","stories/sv7","stories/sv8",
       "stories/sv9",
+
       "taxi/ta1","taxi/ta10","taxi/ta11","taxi/ta12","taxi/ta13","taxi/ta14",
       "taxi/ta2","taxi/ta3","taxi/ta4","taxi/ta5","taxi/ta6","taxi/ta7",
       "taxi/ta8","taxi/ta9","taxi/ti1","taxi/ti10","taxi/ti11","taxi/ti12",
@@ -11859,6 +12163,7 @@ Object.assign(chapterDialogues, {
       "taxi/tx17","taxi/tx18","taxi/tx19","taxi/tx2","taxi/tx20","taxi/tx21",
       "taxi/tx22","taxi/tx23","taxi/tx24","taxi/tx25","taxi/tx26","taxi/tx3",
       "taxi/tx4","taxi/tx5","taxi/tx6","taxi/tx7","taxi/tx8","taxi/tx9",
+
       "tours/to1","tours/to10","tours/to11","tours/to12","tours/to13","tours/to14",
       "tours/to2","tours/to3","tours/to4","tours/to5","tours/to6","tours/to7",
       "tours/to8","tours/to9","tours/tp1","tours/tp10","tours/tp11","tours/tp12",
@@ -11867,6 +12172,7 @@ Object.assign(chapterDialogues, {
       "tours/tr11","tours/tr12","tours/tr13","tours/tr14","tours/tr15","tours/tr16",
       "tours/tr17","tours/tr2","tours/tr3","tours/tr4","tours/tr5","tours/tr6",
       "tours/tr7","tours/tr8","tours/tr9",
+
       "workplace/w1","workplace/w10","workplace/w11","workplace/w12","workplace/w13","workplace/w14",
       "workplace/w15","workplace/w16","workplace/w17","workplace/w18","workplace/w19","workplace/w2",
       "workplace/w20","workplace/w21","workplace/w22","workplace/w23","workplace/w24","workplace/w25",
@@ -11876,57 +12182,101 @@ Object.assign(chapterDialogues, {
       "workplace/wb4","workplace/wb5","workplace/wb6","workplace/wb7","workplace/wb8","workplace/wb9",
       "workplace/wc1","workplace/wc10","workplace/wc11","workplace/wc12","workplace/wc13","workplace/wc14",
       "workplace/wc2","workplace/wc3","workplace/wc4","workplace/wc5","workplace/wc6","workplace/wc7",
-      "workplace/wc8","workplace/wc9"
+      "workplace/wc8","workplace/wc9",
     ]);
     let currentAudio = null;
+    let currentLineIndex = -1;
+    let sentenceLoop = false;
+    let sentenceLoopTimer = null;
+    let playbackPaused = false;
+    let lineRunToken = 0;
 
-    function hasLineAudio(line) {
-      const key = activeChapterId + "/" + line.id;
-      if (window.AUDIO_B64 && window.AUDIO_B64[key]) return true;
-      return audioManifest.has(key);
+    function hasLineAudio(line, chapterId = activeChapterId) {
+      return audioManifest.has(chapterId + "/" + line.id);
     }
 
-    function playAudioElement(line, forceSlow = false) {
+    function playAudioElement(line, forceSlow = false, chapterId = activeChapterId, rateOverride = null) {
       return new Promise((resolve, reject) => {
-        const key = activeChapterId + "/" + line.id;
-        let src;
-        let blobUrl = null;
-        if (window.AUDIO_B64 && window.AUDIO_B64[key]) {
-          const bin = atob(window.AUDIO_B64[key]);
-          const bytes = new Uint8Array(bin.length);
-          for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-          blobUrl = URL.createObjectURL(new Blob([bytes], { type: "audio/mpeg" }));
-          src = blobUrl;
-        } else {
-          src = "audio/" + key + ".mp3";
-        }
+        const src = "audio/" + chapterId + "/" + line.id + ".mp3";
         const audio = new Audio(src);
-        audio.playbackRate = forceSlow ? 0.72 : Math.max(0.5, Math.min(1, getSpeedFactor()));
+        // 加速 / 减速时保持音调不变，避免“尖嗓子”或低沉失真
+        try {
+          audio.preservesPitch = true;
+          if ("webkitPreservesPitch" in audio) audio.webkitPreservesPitch = true;
+          if ("mozPreservesPitch" in audio) audio.mozPreservesPitch = true;
+        } catch (e) {}
+        audio.playbackRate = rateOverride !== null
+          ? rateOverride
+          : (forceSlow ? 0.72 : Math.max(0.5, Math.min(2, getSpeedFactor())));
         currentAudio = audio;
         const cleanup = () => {
           if (currentAudio === audio) currentAudio = null;
-          if (blobUrl) { try { URL.revokeObjectURL(blobUrl); } catch (e) {} }
         };
+        // 被新的播放打断（stop/切句/循环重播）不算失败，静默结束，避免误走 TTS 回退
+        const superseded = () => currentAudio !== audio;
         audio.onended = () => { cleanup(); resolve(true); };
-        audio.onerror = () => { cleanup(); reject(new Error("audio failed")); };
-        audio.play().catch(err => { cleanup(); reject(err); });
+        audio.onerror = () => { cleanup(); superseded() ? resolve(false) : reject(new Error("audio failed")); };
+        audio.play().catch(err => {
+          cleanup();
+          superseded() ? resolve(false) : reject(err);
+        });
       });
     }
 
     async function speakLineByIndex(index, forceSlow = false) {
       stopPlayback();
+      const token = lineRunToken;
+      currentLineIndex = index;
       const line = sceneLines[index];
       highlightLine(line.id);
       if (hasLineAudio(line)) {
         try {
           setPlaybackStatus("🔊 HD voice");
           await playAudioElement(line, forceSlow);
+          if (token !== lineRunToken) return;
           clearActiveLine();
+          scheduleSentenceLoop(index, forceSlow, token);
           return;
         } catch (e) { /* 回退到本地 TTS */ }
       }
       await speakText(line.text, roles[line.role], line.emotion, forceSlow);
+      if (token !== lineRunToken) return;
       clearActiveLine();
+      scheduleSentenceLoop(index, forceSlow, token);
+    }
+
+    function scheduleSentenceLoop(index, forceSlow, token) {
+      if (!sentenceLoop) return;
+      clearTimeout(sentenceLoopTimer);
+      setPlaybackStatus("🔁 Looping sentence…");
+      sentenceLoopTimer = setTimeout(() => {
+        if (sentenceLoop && token === lineRunToken) speakLineByIndex(index, forceSlow);
+      }, 700);
+    }
+
+    function toggleSentenceLoop() {
+      sentenceLoop = !sentenceLoop;
+      const button = $("#loop-button");
+      if (button) button.classList.toggle("active", sentenceLoop);
+      if (sentenceLoop) {
+        setPlaybackStatus("🔁 单句循环已开启");
+        if (currentLineIndex >= 0 && currentLineIndex < sceneLines.length) {
+          speakLineByIndex(currentLineIndex);
+        }
+      } else {
+        clearTimeout(sentenceLoopTimer);
+        setPlaybackStatus("单句循环已关闭");
+      }
+    }
+
+    function prevSentence() {
+      const index = Math.max(0, (currentLineIndex >= 0 ? currentLineIndex : 0) - 1);
+      speakLineByIndex(index);
+    }
+
+    function nextSentence() {
+      const index = Math.min(sceneLines.length - 1, (currentLineIndex >= 0 ? currentLineIndex : -1) + 1);
+      speakLineByIndex(index);
     }
 
     async function speakChunk(event, index) {
@@ -11937,7 +12287,8 @@ Object.assign(chapterDialogues, {
       button.classList.remove("active");
     }
 
-    async function playScene() {
+    async function playScene(options = {}) {
+      const native = Boolean(options.native);
       stopPlayback();
       isRoleplay = false;
       $("#roleplay-panel").classList.remove("show");
@@ -11951,45 +12302,45 @@ Object.assign(chapterDialogues, {
         return;
       }
 
-      setPlaybackStatus("Playing scene...");
+      const dialogueEl = $("#dialogue");
+      const nativeRate = Math.min(2, Math.max(1, getSpeedFactor() * 1.8));
+      if (native) {
+        dialogueEl.classList.add("blind");
+        setPlaybackStatus("🚀 原速听感挑战中…（点击任意句子可提前查看文本）");
+      } else {
+        setPlaybackStatus("Playing scene...");
+      }
 
       for (let index = 0; index < sceneLines.length; index++) {
         if (runId !== sceneRunId) return;
         const line = sceneLines[index];
         const profile = roles[line.role];
+        currentLineIndex = index;
         highlightLine(line.id);
-        setPlaybackStatus(`${profile.name} speaking...`);
+        setPlaybackStatus(native ? `🚀 原速挑战 · ${profile.name} speaking...` : `${profile.name} speaking...`);
         try {
           if (hasLineAudio(line)) {
-            await playAudioElement(line);
+            await playAudioElement(line, false, activeChapterId, native ? nativeRate : null);
           } else if ("speechSynthesis" in window) {
-            await speakText(line.text, profile, line.emotion);
+            await speakText(line.text, profile, line.emotion, false, native ? 1.18 : null);
           }
         } catch (e) {
           if (runId !== sceneRunId) return;
         }
         if (runId !== sceneRunId) return;
         if (index < sceneLines.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, Math.round((line.pauseAfterMs || 400) * 0.6)));
+          const gap = native
+            ? 150
+            : Math.max(120, Math.round((line.pauseAfterMs || 400) * 0.6 / getSpeedFactor()));
+          await new Promise(resolve => setTimeout(resolve, gap));
         }
       }
       if (runId === sceneRunId) {
+        dialogueEl.classList.remove("blind");
         clearActiveLine();
-        setPlaybackStatus("Scene complete");
+        setPlaybackStatus(native ? "🚀 挑战完成！现在可以对照文本再听一遍" : "Scene complete");
         markDone("dialog");
       }
-    }
-    function createUtterance(text, profile, emotion = "neutral", forceSlow = false) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      const voice = pickVoice(profile);
-      if (voice) utterance.voice = voice;
-
-      const adjusted = emotionAdjust(emotion, profile.pitch, profile.rate);
-      utterance.lang = profile.lang;
-      utterance.pitch = Math.max(0.1, Math.min(2, adjusted.pitch));
-      utterance.volume = profile.volume;
-      utterance.rate = Math.max(0.1, Math.min(2, adjusted.rate * getSpeedFactor() * (forceSlow ? 0.72 : 1)));
-      return utterance;
     }
 
     function setPlaybackStatus(text) {
@@ -11998,23 +12349,36 @@ Object.assign(chapterDialogues, {
     }
 
     function togglePlaybackPause() {
-      if (!("speechSynthesis" in window)) return;
       const button = $("#pause-button");
-      if (window.speechSynthesis.paused) {
-        window.speechSynthesis.resume();
-        button.textContent = "⏸ 暂停";
-        setPlaybackStatus("Playing scene...");
-      } else {
-        window.speechSynthesis.pause();
+      const wasAudioPlaying = currentAudio && !currentAudio.paused && !currentAudio.ended;
+      const wasTtsPlaying = "speechSynthesis" in window &&
+        (window.speechSynthesis.speaking || window.speechSynthesis.pending) &&
+        !window.speechSynthesis.paused;
+      if (!playbackPaused && !wasAudioPlaying && !wasTtsPlaying) return;
+
+      playbackPaused = !playbackPaused;
+      if (playbackPaused) {
+        if (currentAudio) { try { currentAudio.pause(); } catch (e) {} }
+        if ("speechSynthesis" in window) { try { window.speechSynthesis.pause(); } catch (e) {} }
         button.textContent = "▶ 继续";
         setPlaybackStatus("Paused");
+      } else {
+        if (currentAudio) { currentAudio.play().catch(() => {}); }
+        if ("speechSynthesis" in window && window.speechSynthesis.paused) {
+          try { window.speechSynthesis.resume(); } catch (e) {}
+        }
+        button.textContent = "⏸ 暂停";
+        setPlaybackStatus("Playing scene...");
       }
     }
 
     function stopPlayback() {
       sceneRunId++;
       speechRunId++;
+      lineRunToken++;
       isRoleplay = false;
+      playbackPaused = false;
+      clearTimeout(sentenceLoopTimer);
       if (currentAudio) {
         currentAudio.pause();
         currentAudio = null;
@@ -12029,6 +12393,8 @@ Object.assign(chapterDialogues, {
       }
       const pauseButton = $("#pause-button");
       if (pauseButton) pauseButton.textContent = "⏸ 暂停";
+      const dialogueEl = $("#dialogue");
+      if (dialogueEl) dialogueEl.classList.remove("blind");
       setPlaybackStatus("Stopped");
       clearActiveLine();
       $("#roleplay-panel").classList.remove("show");
@@ -12051,6 +12417,7 @@ Object.assign(chapterDialogues, {
         if (runId !== sceneRunId || !isRoleplay) return;
         const line = sceneLines[i];
         roleplayIndex = i;
+        currentLineIndex = i;
 
         if (line.role === roleplayUser) {
           highlightLine(line.id);
@@ -12074,7 +12441,7 @@ Object.assign(chapterDialogues, {
           await speakText(line.text, roles[line.role], line.emotion);
         }
         if (runId !== sceneRunId || !isRoleplay) return;
-        await sleep(line.pauseAfterMs || 420);
+        await sleep(Math.max(200, Math.round((line.pauseAfterMs || 420) / getSpeedFactor())));
       }
 
       if (runId === sceneRunId && isRoleplay) {
@@ -12087,6 +12454,7 @@ Object.assign(chapterDialogues, {
 
     function roleplayNext() {
       if (!isRoleplay) return;
+      closeScorePanel();
       runRoleplayFrom(roleplayIndex + 1);
     }
 
@@ -12154,12 +12522,17 @@ Object.assign(chapterDialogues, {
       return ops.reverse();
     }
 
-    function renderScore(line, transcript) {
+    function computeScore(line, transcript) {
       const expected = tokenize(line.text);
       const said = tokenize(transcript);
       const ops = alignWords(expected, said);
       const matched = ops.filter(op => op.type === "ok").length;
       const pct = expected.length ? Math.round(matched / expected.length * 100) : 0;
+      return { ops, pct };
+    }
+
+    function renderScore(line, transcript) {
+      const { ops, pct } = computeScore(line, transcript);
 
       const expectedHtml = ops
         .filter(op => op.type !== "extra")
@@ -12185,7 +12558,40 @@ Object.assign(chapterDialogues, {
         ${detail}
       `;
       $("#score-status").textContent = "识别完成，评分如上。";
-      if (pct >= 85) markDone("shadow");
+      trackActivity(1);
+      if (pct >= 85) {
+        if (lineReviewActive) {
+          removeLineReview(scoreContextChapter || activeChapterId, line.id);
+          $("#score-status").textContent = "识别完成，评分如上。✅ 已达标，自动移出复习队列。";
+          setTimeout(() => { if (lineReviewActive) advanceLineReview(); }, 1200);
+        } else {
+          markDone("shadow");
+        }
+      } else {
+        addLineReview(scoreContextChapter || activeChapterId, line, pct);
+      }
+    }
+
+    function listenAndScore(index) {
+      if (!SpeechRec) {
+        alert("当前浏览器不支持语音识别。请使用 Chrome 或 Edge 浏览器体验跟读打分。");
+        return;
+      }
+      const line = sceneLines[index];
+      if (!line) return;
+      scoreContextChapter = activeChapterId;
+      currentScoreIndex = index;
+      currentScoreLine = line;
+      scoreResultReceived = false;
+
+      const panel = $("#score-panel");
+      panel.classList.add("show");
+      $("#score-title").textContent = "🎤 跟读打分 · " + (roles[line.role] ? roles[line.role].name : "");
+      $("#score-expected").innerHTML = `<span>${line.text}</span>`;
+      $("#score-result").innerHTML = "";
+      $("#score-status").textContent = "🎙 正在聆听……请照着提示句朗读（说完稍等一秒）。";
+      highlightLine(line.id);
+      startRecognition(line);
     }
 
     async function startShadow(index) {
@@ -12194,8 +12600,10 @@ Object.assign(chapterDialogues, {
         return;
       }
       stopPlayback();
-      currentScoreIndex = index;
       const line = sceneLines[index];
+      if (!line) return;
+      scoreContextChapter = activeChapterId;
+      currentScoreIndex = index;
       currentScoreLine = line;
       scoreResultReceived = false;
 
@@ -12218,17 +12626,185 @@ Object.assign(chapterDialogues, {
       startRecognition(line);
     }
 
+    // ---- 跟读复习循环：不满 85 分的句子自动排队，达标即移出 ----
+    let scoreContextChapter = null;
+    let lineReviewActive = false;
+    let lineReviewQueue = [];
+    let lineReviewIndex = 0;
+
+    function getLineReviews() {
+      if (!progress.lineReviews) progress.lineReviews = {};
+      return progress.lineReviews;
+    }
+
+    function getLineReviewCount() {
+      return Object.keys(getLineReviews()).length;
+    }
+
+    function addLineReview(chapterId, line, score) {
+      if (!chapterId || !line) return;
+      const key = chapterId + "/" + line.id;
+      const entry = getLineReviews()[key];
+      getLineReviews()[key] = {
+        chapter: chapterId,
+        lineId: line.id,
+        score,
+        count: (entry ? entry.count : 0) + 1,
+        at: Date.now()
+      };
+      saveStorage();
+      renderLineReviewCount();
+    }
+
+    function removeLineReview(chapterId, lineId) {
+      delete getLineReviews()[chapterId + "/" + lineId];
+      saveStorage();
+      renderLineReviewCount();
+    }
+
+    function renderLineReviewCount() {
+      const el = $("#line-review-count");
+      if (el) el.textContent = `${getLineReviewCount()} 句`;
+    }
+
+    function findLineInChapter(chapterId, lineId) {
+      const dialogues = chapterDialogues[chapterId] ||
+        [{ lines: chapters[chapterId] ? chapters[chapterId].sceneLines : [] }];
+      for (const d of dialogues) {
+        for (const l of d.lines) {
+          if (l.id === lineId) return l;
+        }
+      }
+      return null;
+    }
+
+    function listenAndScoreLine(line, chapterId) {
+      if (!SpeechRec) {
+        alert("当前浏览器不支持语音识别。请使用 Chrome 或 Edge 浏览器体验跟读打分。");
+        return;
+      }
+      scoreContextChapter = chapterId;
+      currentScoreLine = line;
+      currentScoreIndex = -1;
+      scoreResultReceived = false;
+      $("#score-panel").classList.add("show");
+      $("#score-title").textContent = "🎤 复习跟读 · " + (chapters[chapterId] ? chapters[chapterId].title : "");
+      $("#score-expected").innerHTML = `<span>${line.text}</span>`;
+      $("#score-result").innerHTML = "";
+      $("#score-status").textContent = "🎙 正在聆听……请照着提示句朗读（说完稍等一秒）。";
+      startRecognition(line);
+    }
+
+    function startLineReview() {
+      const entries = Object.entries(getLineReviews())
+        .sort((a, b) => (a[1].at || 0) - (b[1].at || 0));
+      if (!entries.length) {
+        alert("暂时没有待复习的句子。跟读打分不满 85 分的句子会自动出现在这里。");
+        return;
+      }
+      lineReviewQueue = entries.map(([key, v]) => ({
+        chapter: v.chapter || key.split("/")[0],
+        lineId: v.lineId || key.split("/")[1],
+        score: v.score || 0
+      }));
+      lineReviewIndex = 0;
+      lineReviewActive = true;
+      stopPlayback();
+      showPage("map");
+      renderLineReviewCard();
+      $("#line-review-panel").scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+
+    function renderLineReviewCard() {
+      const panel = $("#line-review-panel");
+      if (!panel) return;
+      if (!lineReviewActive) { panel.style.display = "none"; return; }
+      if (lineReviewIndex >= lineReviewQueue.length) { advanceLineReview(); return; }
+      const item = lineReviewQueue[lineReviewIndex];
+      const line = findLineInChapter(item.chapter, item.lineId);
+      if (!line) { advanceLineReview(); return; }
+      const chapter = chapters[item.chapter];
+      panel.style.display = "block";
+      panel.innerHTML = `
+        <div class="zh" style="margin-bottom:6px; color:var(--muted);">第 ${lineReviewIndex + 1} / ${lineReviewQueue.length} 句 · ${chapter ? chapter.title : ""} · 上次 ${item.score} 分</div>
+        <div class="en">${renderEnglishText(line.text)}</div>
+        <div class="zh">${line.zh}</div>
+        <div class="controls" style="margin-top:12px;">
+          <button class="btn btn-primary btn-sm" onclick="playLineReviewSample()">🔊 听示范</button>
+          <button class="btn btn-ghost btn-sm" onclick="playLineReviewSample(true)">🐢 慢速</button>
+          <button class="btn btn-blue btn-sm" onclick="scoreLineReviewLine()">🎤 跟读打分</button>
+          <button class="btn btn-ghost btn-sm" onclick="advanceLineReview()">⏭ 下一句</button>
+          <button class="btn btn-ghost btn-sm" onclick="endLineReview()">结束</button>
+        </div>
+      `;
+    }
+
+    async function playLineReviewSample(forceSlow = false) {
+      const item = lineReviewQueue[lineReviewIndex];
+      if (!item) return;
+      const line = findLineInChapter(item.chapter, item.lineId);
+      if (!line) return;
+      stopPlayback();
+      if (hasLineAudio(line, item.chapter)) {
+        try { await playAudioElement(line, forceSlow, item.chapter); return; } catch (e) {}
+      }
+      if ("speechSynthesis" in window) {
+        await speakText(line.text, roles[line.role], line.emotion, forceSlow);
+      }
+    }
+
+    function scoreLineReviewLine() {
+      const item = lineReviewQueue[lineReviewIndex];
+      if (!item) return;
+      const line = findLineInChapter(item.chapter, item.lineId);
+      if (!line) { advanceLineReview(); return; }
+      listenAndScoreLine(line, item.chapter);
+    }
+
+    function advanceLineReview() {
+      if (!lineReviewActive) return;
+      lineReviewIndex++;
+      if (lineReviewIndex >= lineReviewQueue.length) {
+        lineReviewActive = false;
+        closeScorePanel();
+        const remaining = getLineReviewCount();
+        $("#line-review-panel").style.display = "block";
+        $("#line-review-panel").innerHTML = `<p class="zh">${remaining
+          ? `本轮复习完成，还有 ${remaining} 句未达标，明天继续加油！`
+          : "🎉 队列清空！全部句子都达到 85 分以上。"}</p>`;
+        return;
+      }
+      renderLineReviewCard();
+    }
+
+    function endLineReview() {
+      lineReviewActive = false;
+      closeScorePanel();
+      const panel = $("#line-review-panel");
+      if (panel) panel.style.display = "none";
+    }
+
     function startRecognition(line) {
       const rec = new SpeechRec();
       currentRecognition = rec;
       rec.lang = "en-US";
       rec.interimResults = false;
-      rec.maxAlternatives = 1;
+      rec.maxAlternatives = 3;
 
       rec.onresult = (event) => {
         scoreResultReceived = true;
-        const transcript = event.results[0][0].transcript;
-        renderScore(line, transcript);
+        const result = event.results[0];
+        let bestTranscript = "";
+        let bestPct = -1;
+        for (let i = 0; i < result.length; i++) {
+          const transcript = result[i].transcript;
+          const { pct } = computeScore(line, transcript);
+          if (pct > bestPct) {
+            bestPct = pct;
+            bestTranscript = transcript;
+          }
+        }
+        renderScore(line, bestTranscript);
       };
       rec.onerror = (event) => {
         if (event.error === "not-allowed" || event.error === "service-not-allowed") {
@@ -12306,11 +12882,14 @@ Object.assign(chapterDialogues, {
     function submitQuiz() {
       let score = 0;
       let answered = 0;
+      const wrongQuestions = [];
 
       $$(".quiz-question").forEach((block, qIndex) => {
         const selected = block.querySelector("input[type='radio']:checked");
         const options = Array.from(block.querySelectorAll(".quiz-option"));
         options.forEach(option => option.classList.remove("correct", "wrong"));
+        const reviewLine = $(`#quiz-review-${qIndex}`);
+        if (reviewLine) reviewLine.style.display = "none";
 
         if (selected) {
           answered++;
@@ -12322,6 +12901,7 @@ Object.assign(chapterDialogues, {
           } else {
             chosenOption.classList.add("wrong");
             options[quizData[qIndex].answer].classList.add("correct");
+            wrongQuestions.push(qIndex);
           }
         }
       });
@@ -12335,9 +12915,16 @@ Object.assign(chapterDialogues, {
         return;
       }
 
+      // 全部答完才展示错题的正确答案（其中的生词可点击收藏）
+      wrongQuestions.forEach(qIndex => {
+        const reviewLine = $(`#quiz-review-${qIndex}`);
+        if (reviewLine) reviewLine.style.display = "block";
+      });
+
       progress.quizScore = score;
       progress.quizScores[activeChapterId] = score;
       progress.done[`${activeChapterId}:quiz`] = true;
+      trackActivity(1);
       saveStorage();
       renderProgress();
 
@@ -12348,7 +12935,10 @@ Object.assign(chapterDialogues, {
     }
 
     function markDone(section) {
-      progress.done[`${activeChapterId}:${section}`] = true;
+      const key = `${activeChapterId}:${section}`;
+      if (progress.done[key]) return;
+      progress.done[key] = true;
+      trackActivity(1);
       saveStorage();
       renderProgress();
     }
@@ -12360,13 +12950,65 @@ Object.assign(chapterDialogues, {
         quizScore: null,
         quizScores: {},
         lastChapter: activeChapterId,
-        savedWords: progress.savedWords || {}
+        savedWords: progress.savedWords || {},
+        activity: {},
+        lineReviews: {}
       };
       saveStorage();
       renderProgress();
       renderQuiz();
       $("#quiz-result").classList.remove("show");
       alert("进度已重置。");
+    }
+
+    // ---- 难度分层：A2 生存必备 → B1 生活与社交 → B1+ 进阶表达 ----
+    const chapterLevels = {
+      coffee: "A2", restaurant: "A2", shopping: "A2", directions: "A2", taxi: "A2",
+      hotel: "A2", airport: "A2", market: "A2", delivery: "A2",
+      post: "B1", rental: "B1", renting: "B1", bank: "B1", doctor: "B1", gym: "B1",
+      movies: "B1", party: "B1", smalltalk: "B1", plans: "B1", phone: "B1",
+      experiences: "B1+", opinions: "B1+", stories: "B1+", workplace: "B1+",
+      interview: "B1+", presentation: "B1+", tours: "B1+", emergency: "B1+"
+    };
+    const LEVEL_META = {
+      "A2": { name: "A2 · 生存必备", desc: "点单、购物、出行、住宿——先把事办成" },
+      "B1": { name: "B1 · 生活与社交", desc: "金融、租房、电话、社交——走向自如生活" },
+      "B1+": { name: "B1+ · 进阶表达", desc: "观点、故事、职场、演讲——说出你的想法" }
+    };
+    const LEVEL_ORDER = ["A2", "B1", "B1+"];
+
+    function renderPathCard() {
+      const container = $("#path-rows");
+      if (!container) return;
+      container.innerHTML = LEVEL_ORDER.map(level => {
+        const meta = LEVEL_META[level];
+        const ids = Object.keys(chapterLevels).filter(id => chapterLevels[id] === level);
+        const chips = ids.map(id => {
+          const chapter = chapters[id];
+          const done = progress.done[`${id}:quiz`] && progress.done[`${id}:dialog`];
+          return `<span class="path-chip${done ? " done" : ""}" title="${chapter ? chapter.title : id}" onclick="showPage('chapter'); showChapter('${id}');">${chapter ? chapter.number.replace("Chapter ", "") : ""} ${chapter ? chapter.title : id}</span>`;
+        }).join("");
+        return `
+          <div class="path-row">
+            <div class="path-row-head">
+              <span class="path-row-title">${meta.name}</span>
+              <span class="path-row-desc">${meta.desc}</span>
+            </div>
+            <div class="path-chips">${chips}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderMapBadges() {
+      Object.keys(chapterLevels).forEach(id => {
+        const status = $(`#map-status-${id}`);
+        if (!status) return;
+        const card = status.closest(".map-card");
+        if (!card || card.querySelector(".level-badge")) return;
+        const no = card.querySelector(".chapter-no");
+        if (no) no.insertAdjacentHTML("beforeend", ` <span class="level-badge lv-${chapterLevels[id]}">${chapterLevels[id]}</span>`);
+      });
     }
 
     function renderProgress() {
@@ -12386,6 +13028,63 @@ Object.assign(chapterDialogues, {
         const el = $(`#map-status-${chapterId}`);
         if (el) el.textContent = chapterDone ? "✔ 已完成核心练习" : "● 可学习";
       });
+
+      renderMapBadges();
+      renderPathCard();
+      renderLineReviewCount();
+      renderStats();
+    }
+
+    function dayKey(date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    }
+
+    function todayKey() {
+      return dayKey(new Date());
+    }
+
+    function trackActivity(count = 1) {
+      if (!progress.activity) progress.activity = {};
+      const key = todayKey();
+      progress.activity[key] = (progress.activity[key] || 0) + count;
+
+      const keys = Object.keys(progress.activity);
+      if (keys.length > 400) {
+        keys.sort().slice(0, keys.length - 400).forEach(old => delete progress.activity[old]);
+      }
+      saveStorage();
+      renderStats();
+    }
+
+    function calcStreak() {
+      const act = progress.activity || {};
+      const DAY = 24 * 60 * 60 * 1000;
+      let d = new Date();
+      d.setHours(12, 0, 0, 0);
+      if (!act[dayKey(d)]) {
+        d = new Date(d.getTime() - DAY);
+        if (!act[dayKey(d)]) return 0;
+      }
+      let streak = 0;
+      while (act[dayKey(d)]) {
+        streak++;
+        d = new Date(d.getTime() - DAY);
+      }
+      return streak;
+    }
+
+    function renderStats() {
+      const card = $("#stats-card");
+      if (!card) return;
+      const today = (progress.activity || {})[todayKey()] || 0;
+      const goal = Number(settings.dailyGoal) || 10;
+      const streak = calcStreak();
+      $("#stats-streak").textContent = `${streak} 天`;
+      $("#stats-today").textContent = `${today} / ${goal}`;
+      $("#stats-fill").style.width = `${Math.min(100, Math.round((today / goal) * 100))}%`;
+      $("#stats-today-note").textContent = today >= goal
+        ? "今日目标已达成 🎉 继续保持！"
+        : "跟读打分、复习卡片、提交测验都会计入今日练习。";
     }
 
     function toggleChinese() {
@@ -12397,6 +13096,7 @@ Object.assign(chapterDialogues, {
 
     document.addEventListener("DOMContentLoaded", () => {
       loadStorage();
+      applyTheme();
       activeChapterId = progress.lastChapter || "coffee";
       showChapter(activeChapterId);
       renderChunks();
@@ -12405,6 +13105,7 @@ Object.assign(chapterDialogues, {
       renderVocab();
       syncSettingsUI();
       renderProgress();
+      renderStats();
       showPage(progress.lastPage || "cover");
 
     // ---- PWA Service Worker 注册（仅安全上下文） ----
@@ -12432,6 +13133,35 @@ Object.assign(chapterDialogues, {
       event.stopPropagation();
       openWord(wordElement.dataset.word);
     }, true);
+
+    // 键盘快捷键：空格 播放/暂停 · ←/→ 切句 · R 慢速重听
+    document.addEventListener("keydown", event => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target;
+      if (target && typeof target.closest === "function" &&
+          target.closest("input, textarea, select, button, a, label, [contenteditable]")) return;
+
+      if (event.code === "Space") {
+        event.preventDefault();
+        const audioPlaying = currentAudio && !currentAudio.paused && !currentAudio.ended;
+        const ttsPlaying = "speechSynthesis" in window &&
+          (window.speechSynthesis.speaking || window.speechSynthesis.pending);
+        if (audioPlaying || ttsPlaying || playbackPaused) {
+          togglePlaybackPause();
+        } else if (sceneLines && sceneLines.length) {
+          playScene();
+        }
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        prevSentence();
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        nextSentence();
+      } else if (event.key === "r" || event.key === "R") {
+        const index = currentLineIndex >= 0 ? currentLineIndex : 0;
+        if (sceneLines && sceneLines[index]) speakLineByIndex(index, true);
+      }
+    });
   </script>
 </body>
 </html>
