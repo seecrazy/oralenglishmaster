@@ -279,6 +279,32 @@
 
     #dialogue.blind .line .en, #dialogue.blind .line .zh { visibility: hidden; }
     #dialogue.blind .line.active .bubble { border-color: var(--accent); }
+
+    .role-voice-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 10px 16px;
+    }
+    .role-voice-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .role-voice-name {
+      min-width: 96px;
+      line-height: 1.25;
+    }
+    .role-voice-name strong { display: block; font-size: .9rem; }
+    .role-voice-name .small { color: var(--muted); font-size: .74rem; }
+    .role-voice-row select {
+      flex: 1;
+      min-width: 0;
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--ink);
+    }
     .btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
 
     .cover-card {
@@ -1827,6 +1853,18 @@
         <p class="zh">空格 播放 / 暂停 · ← → 上一句 / 下一句 · R 慢速重听当前句</p>
       </div>
       <div class="card">
+        <h3>角色声音</h3>
+        <p class="zh">对话默认使用录音原声（HD voice）。切换为「角色配音」后，对话、角色扮演和跟读示范都会用系统语音按下面的角色声音朗读——每个角色可以选不同的声音。单词、语块、例句始终使用系统语音。</p>
+        <label class="small" style="display:block; margin:10px 0 6px;">对话朗读引擎</label>
+        <select id="dialog-voice-select" onchange="setDialogVoice(this.value)">
+          <option value="hd">🎧 HD 录音原声（推荐）</option>
+          <option value="tts">🗣 角色配音（系统语音）</option>
+        </select>
+        <label class="small" style="display:block; margin:16px 0 6px;">每个角色的声音</label>
+        <div id="role-voice-list" class="role-voice-list"></div>
+        <p class="zh" id="voice-hint" style="margin-top:10px;">声音列表来自系统/浏览器。Chrome、Edge、Safari 桌面版声音最全； macOS 可在 系统设置 → 辅助功能 → 朗读内容 → 系统声音 里安装更多声音（如 Siri、Samantha、Daniel 等）。</p>
+      </div>
+      <div class="card">
         <h3>中文显示</h3>
         <label class="small">
           <input type="checkbox" id="hide-chinese-2" onchange="syncChineseToggles(); toggleChinese(); saveSettings()">
@@ -1895,7 +1933,9 @@
       speed: "normal",
       hideChinese: false,
       theme: "auto",
-      dailyGoal: 10
+      dailyGoal: 10,
+      dialogVoice: "hd",
+      roleVoices: {}
     };
 
     const roles = {
@@ -2150,6 +2190,9 @@
         color: "#3E7CB1"
       }
     };
+
+    // 挂上角色 key，供角色声音设置（settings.roleVoices）查找
+    Object.keys(roles).forEach(roleKey => { roles[roleKey].key = roleKey; });
 
     const coffeeChunks = [
       { en: "Can I have a latte, please?", zh: "请给我一杯拿铁。" },
@@ -11051,6 +11094,7 @@
       $("#hide-chinese-2").checked = settings.hideChinese;
       $("#theme-select").value = settings.theme || "auto";
       $("#daily-goal-select").value = String(settings.dailyGoal || 10);
+      $("#dialog-voice-select").value = settings.dialogVoice || "hd";
       applyTheme();
       toggleChinese();
     }
@@ -11075,6 +11119,69 @@
       renderStats();
     }
 
+    // ---- 角色声音：每个角色可从系统声音里任选 ----
+    function listSelectableVoices() {
+      const voices = getVoices();
+      const en = voices.filter(v => v.lang && /^en/i.test(v.lang));
+      const others = voices.filter(v => !en.includes(v));
+      return [...en, ...others];
+    }
+
+    function renderVoiceSettings() {
+      const container = $("#role-voice-list");
+      if (!container) return;
+      const voices = listSelectableVoices();
+      const roleKeys = Object.keys(roles);
+
+      container.innerHTML = roleKeys.map(key => {
+        const profile = roles[key];
+        const options = [`<option value="">默认（自动匹配 ${profile.lang} 声音）</option>`]
+          .concat(voices.map(v =>
+            `<option value="${v.voiceURI || v.name}"${(settings.roleVoices[key] === (v.voiceURI || v.name)) ? " selected" : ""}>${v.name}（${v.lang}${v.localService ? "" : " · 在线"}）</option>`
+          ))
+          .join("");
+        return `
+          <div class="role-voice-row">
+            <div class="role-voice-name">
+              <strong>${profile.name}</strong>
+              <span class="small">${profile.role}</span>
+            </div>
+            <select onchange="setRoleVoice('${key}', this.value)">${options}</select>
+            <button class="btn btn-ghost btn-sm" onclick="testRoleVoice('${key}')" title="用该角色当前声音试听">🔊</button>
+          </div>
+        `;
+      }).join("");
+
+      const hint = $("#voice-hint");
+      if (hint) {
+        hint.textContent = voices.length
+          ? `共检测到 ${voices.length} 个系统声音（英文优先显示）。Chrome、Edge、Safari 桌面版声音最全；macOS 可在 系统设置 → 辅助功能 → 朗读内容 → 系统声音 安装更多声音（如 Samantha、Daniel 等）。`
+          : "当前浏览器暂未检测到可用声音（可能仍在加载，或此环境不支持）。请用 Chrome、Edge 或 Safari 打开本页后再选择。";
+        if (!voices.length) {
+          hint.style.color = "var(--red)";
+        }
+      }
+    }
+
+    function setRoleVoice(roleKey, voiceId) {
+      if (!settings.roleVoices) settings.roleVoices = {};
+      if (voiceId) settings.roleVoices[roleKey] = voiceId;
+      else delete settings.roleVoices[roleKey];
+      saveStorage();
+    }
+
+    function setDialogVoice(value) {
+      settings.dialogVoice = value === "tts" ? "tts" : "hd";
+      saveStorage();
+    }
+
+    function testRoleVoice(roleKey) {
+      const profile = roles[roleKey];
+      if (!profile) return;
+      stopPlayback();
+      speakText(`Hi! I'm ${profile.name}, your ${profile.role.toLowerCase()}. This is how I sound.`, profile, "cheerful");
+    }
+
     function showPage(page) {
       $$(".page").forEach(p => p.classList.remove("active"));
       $$(".nav-btn").forEach(btn => btn.classList.remove("active"));
@@ -11088,6 +11195,9 @@
       }
       if (page === "vocab") {
         renderVocab();
+      }
+      if (page === "settings") {
+        renderVoiceSettings();
       }
       if (page === "chapter") {
         renderPracticeOptions();
@@ -11807,6 +11917,12 @@ Object.assign(chapterDialogues, {
     function pickVoice(profile) {
       const voices = getVoices();
       if (!voices.length) return null;
+      // 用户为该角色手动选择的声音优先
+      const wanted = settings.roleVoices && settings.roleVoices[profile.key];
+      if (wanted) {
+        const picked = voices.find(v => v.voiceURI === wanted || v.name === wanted);
+        if (picked) return picked;
+      }
       for (const hint of profile.voiceHints) {
         const exact = voices.find(v => v.name.toLowerCase() === hint.toLowerCase());
         if (exact) return exact;
@@ -11844,6 +11960,11 @@ Object.assign(chapterDialogues, {
       return 1;
     }
 
+    // 对话朗读引擎：hd = MP3 原声（默认），tts = 用角色配音朗读（角色声音设置才会体现在对话里）
+    function prefersTts() {
+      return settings.dialogVoice === "tts" && "speechSynthesis" in window;
+    }
+
     function speakText(text, profile, emotion = "neutral", forceSlow = false, rateFactor = null) {
       if (!("speechSynthesis" in window)) {
         alert("当前浏览器不支持语音合成。请尝试 Chrome、Edge 或 Safari。");
@@ -11862,11 +11983,15 @@ Object.assign(chapterDialogues, {
 
           const utterance = new SpeechSynthesisUtterance(text);
           const voice = pickVoice(profile);
-          if (voice) utterance.voice = voice;
+          if (voice) {
+            utterance.voice = voice;
+            utterance.lang = voice.lang || profile.lang;
+          } else {
+            utterance.lang = profile.lang;
+          }
 
           const adjusted = emotionAdjust(emotion, profile.pitch, profile.rate);
           const factor = rateFactor !== null ? rateFactor : getSpeedFactor();
-          utterance.lang = profile.lang;
           utterance.pitch = Math.max(0.1, Math.min(2, adjusted.pitch));
           utterance.volume = profile.volume;
           utterance.rate = Math.max(0.1, Math.min(2, adjusted.rate * factor * (forceSlow ? 0.72 : 1)));
@@ -12229,7 +12354,7 @@ Object.assign(chapterDialogues, {
       currentLineIndex = index;
       const line = sceneLines[index];
       highlightLine(line.id);
-      if (hasLineAudio(line)) {
+      if (!prefersTts() && hasLineAudio(line)) {
         try {
           setPlaybackStatus("🔊 HD voice");
           await playAudioElement(line, forceSlow);
@@ -12239,6 +12364,7 @@ Object.assign(chapterDialogues, {
           return;
         } catch (e) { /* 回退到本地 TTS */ }
       }
+      setPlaybackStatus("🗣 角色配音");
       await speakText(line.text, roles[line.role], line.emotion, forceSlow);
       if (token !== lineRunToken) return;
       clearActiveLine();
@@ -12319,7 +12445,7 @@ Object.assign(chapterDialogues, {
         highlightLine(line.id);
         setPlaybackStatus(native ? `🚀 原速挑战 · ${profile.name} speaking...` : `${profile.name} speaking...`);
         try {
-          if (hasLineAudio(line)) {
+          if (!prefersTts() && hasLineAudio(line)) {
             await playAudioElement(line, false, activeChapterId, native ? nativeRate : null);
           } else if ("speechSynthesis" in window) {
             await speakText(line.text, profile, line.emotion, false, native ? 1.18 : null);
@@ -12429,9 +12555,9 @@ Object.assign(chapterDialogues, {
 
         highlightLine(line.id);
         $("#roleplay-title").textContent = "Listening...";
-        $("#roleplay-hint").textContent = "🔊 HD 语音正在朗读对方的台词。";
+        $("#roleplay-hint").textContent = prefersTts() ? "🗣 角色配音正在朗读对方的台词。" : "🔊 HD 语音正在朗读对方的台词。";
         setPlaybackStatus(`${roles[line.role].name} speaking...`);
-        if (hasLineAudio(line)) {
+        if (!prefersTts() && hasLineAudio(line)) {
           try {
             await playAudioElement(line);
           } catch (e) {
@@ -12476,7 +12602,7 @@ Object.assign(chapterDialogues, {
       if (!currentScoreLine) return;
       stopPlayback();
       highlightLine(currentScoreLine.id);
-      if (hasLineAudio(currentScoreLine)) {
+      if (!prefersTts() && hasLineAudio(currentScoreLine)) {
         playAudioElement(currentScoreLine).catch(() => {});
       } else if ("speechSynthesis" in window) {
         speakText(currentScoreLine.text, roles[currentScoreLine.role], currentScoreLine.emotion);
@@ -12615,7 +12741,7 @@ Object.assign(chapterDialogues, {
       $("#score-status").textContent = "🔊 先听示范，然后轮到你……";
       highlightLine(line.id);
 
-      if (hasLineAudio(line)) {
+      if (!prefersTts() && hasLineAudio(line)) {
         try { await playAudioElement(line); } catch (e) {}
       } else if ("speechSynthesis" in window) {
         await speakText(line.text, roles[line.role], line.emotion);
@@ -12745,7 +12871,7 @@ Object.assign(chapterDialogues, {
       const line = findLineInChapter(item.chapter, item.lineId);
       if (!line) return;
       stopPlayback();
-      if (hasLineAudio(line, item.chapter)) {
+      if (!prefersTts() && hasLineAudio(line, item.chapter)) {
         try { await playAudioElement(line, forceSlow, item.chapter); return; } catch (e) {}
       }
       if ("speechSynthesis" in window) {
@@ -12841,7 +12967,7 @@ Object.assign(chapterDialogues, {
       if (!isRoleplay) return;
       const line = sceneLines[roleplayIndex];
       if (!line) return;
-      if (hasLineAudio(line)) {
+      if (!prefersTts() && hasLineAudio(line)) {
         try {
           await playAudioElement(line);
           return;
@@ -13122,6 +13248,7 @@ Object.assign(chapterDialogues, {
       if ("speechSynthesis" in window) {
         window.speechSynthesis.onvoiceschanged = () => {
           getVoices();
+          renderVoiceSettings();
         };
       }
     });

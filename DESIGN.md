@@ -74,7 +74,22 @@ LEVEL_META    = { "A2": {name, desc}, "B1": {...}, "B1+": {...} }
 
 三级：A2 生存必备（9 章）/ B1 生活与社交（11 章）/ B1+ 进阶表达（8 章）。学习地图按此渲染"推荐学习路径"，地图卡片与章节页头部显示等级徽章。注意超市章节 id 为 `market`、派对为 `party`、景点为 `tours`。
 
-### 4.3 localStorage（键 `english-speaking-book-progress-v1`）
+### 4.3 角色与声音
+
+`roles` 定义 25 个角色档案（`name / role / lang / voiceHints / pitch / rate / volume / color`），定义后统一挂 `key` 字段供声音设置查找。声音解析优先级（`pickVoice`）：
+
+1. **用户为该角色手动选择的声音**（`settings.roleVoices[roleKey]`，按 `voiceURI`/`name` 匹配）
+2. `voiceHints` 精确/包含匹配
+3. 任意英文声音 → 任意声音
+
+**对话朗读引擎**（`settings.dialogVoice`）：
+
+- `hd`（默认）：对话/角色扮演/跟读示范播 MP3 录音，角色声音设置不生效于对话；
+- `tts`：上述场景改用角色配音（`speakText` + 各角色已选声音），角色声音设置直接体现在对话里。
+
+所有"按句播放"入口统一经 `!prefersTts() && hasLineAudio(line)` 路由。单词、语块、例句、替换练习始终走 TTS（始终受角色声音影响的是 `customer` 声音）。
+
+### 4.4 localStorage（键 `english-speaking-book-progress-v1`）
 
 ```js
 progress = {
@@ -85,7 +100,7 @@ progress = {
   activity: { "2026-11-09": 3, ... },      // 每日练习次数（打卡/目标统计）
   lineReviews: { "coffee/l1": { chapter, lineId, score, count, at } }        // 跟读复习队列
 }
-settings = { speed, hideChinese, theme, dailyGoal }
+settings = { speed, hideChinese, theme, dailyGoal, dialogVoice: "hd"|"tts", roleVoices: { roleKey: voiceURI } }
 ```
 
 读取时与默认对象浅合并（`loadStorage`），新增字段对老数据向后兼容；`resetProgress` 保留 `savedWords`、清空其余（含 `lineReviews` 与 `activity`）。
